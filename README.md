@@ -19,3 +19,18 @@ select
     ELSE
   END AS []
 from [Database].[TableX]
+
+-------------------------------------------------
+
+select distinct
+   order_id
+  ,A.transaction_id
+  ,order_date
+  ,C.client_id_ga
+from TableA as A
+inner join TableB as B
+  on A.transaction_id = B.transaction_id
+inner join TableC as C
+  on B.hash_customer_email = C.hash_customer_email
+where a.order_status = 'completed'
+  and order_date is not null;
