@@ -107,20 +107,20 @@ DOCUMENTACIÓN ADICIONAL PARA EL MANTENIMIENTO DE DATOS Y ESTRUCTURAS (DDL & DML
 
 -- ELIMINACIÓN DE TABLAS COMPLETAS (DDL)
 -- DROP TABLE: Se utiliza para eliminar la tabla por completo.
--- DROP TABLE IF EXISTS cun.sales;
+-- DROP TABLE IF EXISTS pyme.sales;
 
 
 -- ALTER TABLE: Modifica una tala ya creada. También puede añadir o borrar columnas.
--- ALTER TABLE cun.sales ADD 'quantity' INT
+-- ALTER TABLE pyme.sales ADD 'quantity' INT
 
 
 -- MODIFICACIÓN Y ELIMINACIÓN DE REGISTROS (DML)
 -- UPDATE: Se utiliza para editar valores existentes y en su mayoria de veces se debe acompañar de un WHERE.
--- UPDATE cun.clients SET observations = 'Es celíaco' WHERE client_id = 1;
+-- UPDATE pyme.clients SET observations = 'Es celíaco' WHERE client_id = 1;
 
 
 -- DELETE: Solo elimina filas de la tabla.
--- DELETE FROM cun.products WHERE product_id = 'PROD-010';
+-- DELETE FROM pyme.products WHERE product_id = 'PROD-010';
 */
 
 
@@ -131,7 +131,7 @@ Queries
 */
 -- Consulta básica, donde se trae todos los registros, se omiten los primeros 5 registros y tiene un limite de 10.
 SELECT *
-FROM cun.sales AS s
+FROM pyme.sales AS s
 LIMIT 10
 OFFSET 5;
 
@@ -166,7 +166,7 @@ SELECT
     ,s.sale_date
     ,s.client_id
     ,s.product_id
-FROM cun.sales AS s
+FROM pyme.sales AS s
 WHERE s.sale_date BETWEEN '2025-12-14 00:00:00' AND '2025-12-20 23:59:59'
 ORDER BY s.sale_date ASC;
 
@@ -178,8 +178,8 @@ SELECT
     ,s.client_id
     ,s.product_id
     ,p.price
-FROM cun.sales AS s
-JOIN cun.products AS p
+FROM pyme.sales AS s
+JOIN pyme.products AS p
     ON s.product_id = p.product_id
 WHERE s.client_id BETWEEN 1 AND 5
 HAVING p.price >= 3.00
@@ -191,10 +191,10 @@ SELECT
     s.client_id
     ,CONCAT(c.first_name," ",c.surname) AS client_name
     ,SUM(p.price) AS 'Total'
-FROM cun.sales AS s
-JOIN cun.products AS p
+FROM pyme.sales AS s
+JOIN pyme.products AS p
     ON s.product_id = p.product_id
-JOIN cun.clients AS c
+JOIN pyme.clients AS c
     ON s.client_id = c.client_id
 GROUP BY s.client_id
 ORDER BY 'Total' DESC
@@ -205,8 +205,8 @@ LIMIT 5;
 SELECT
     CONCAT(c.first_name," ",c.surname) AS client_name
     ,COUNT(s.order_id) AS 'Compras'
-FROM cun.sales AS s
-JOIN cun.clients AS c
+FROM pyme.sales AS s
+JOIN pyme.clients AS c
     ON c.client_id = s.client_id
 GROUP BY s.client_id
 HAVING COUNT(s.order_id) > 1
@@ -220,8 +220,8 @@ WITH expent AS (
         ,p.name
         ,p.price
         ,COUNT(S.order_id) AS 'Sales'
-    FROM cun.products AS p
-    JOIN cun.sales AS s
+    FROM pyme.products AS p
+    JOIN pyme.sales AS s
         ON p.product_id = s.product_id
     GROUP BY product_id
 )
@@ -240,8 +240,8 @@ WITH ventas_por_dia AS (
         DATE_FORMAT(s.sale_date,'%D') AS dia
         ,COUNT(s.order_id) AS ventas_dia
         ,SUM(p.price) AS GMV
-    FROM cun.sales AS s
-    JOIN cun.products AS p
+    FROM pyme.sales AS s
+    JOIN pyme.products AS p
         ON s.product_id = p.product_id
     GROUP BY dia
 )
