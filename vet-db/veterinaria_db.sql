@@ -1,16 +1,33 @@
+/*
+-- =============================================
+-- Author: Ivan Hincapie
+-- Create date: 05/28/2026
+-- Description: schema containing tables for products, employees, clients, pets, services, invoices, and sales.
+-- Comments:
+	producto: pet products with type, cost, stock, and price.
+	empleado: employees with name, phone, email, and status.
+	cliente: clients with primary and secondary contact numbers.
+	mascota: pets linked to owners, with type, breed, weight, sex, size, age, and notes.
+	servicio: service types (Peluqueria, Guarderia, Consulta, Venta).
+	factura: service invoices linking pets, employees, and services with cost and timestamp.
+	factura_venta: connects sale invoices to sold products.
+	fac_productos: product sales history with quantity, price, date/time, and employee.
+-- Stack: Docker & MySQL
+-- =============================================
+*/
+
 CREATE SCHEMA veterinaria;
 USE veterinaria;
 
-DROP TABLE IF EXISTS producto;
-DROP TABLE IF EXISTS mascota;
 DROP TABLE IF EXISTS cliente;
-DROP TABLE IF EXISTS factura;
+DROP TABLE IF EXISTS mascota;
 DROP TABLE IF EXISTS empleado;
-DROP TABLE IF EXISTS fact_productos;
 DROP TABLE IF EXISTS servicio;
+DROP TABLE IF EXISTS factura;
+DROP TABLE IF EXISTS factura_venta;
+DROP TABLE IF EXISTS producto;
+DROP TABLE IF EXISTS fact_productos;
 
--- TABLA DE PRODUCTOS
--- Se le quita el data type
 CREATE TABLE producto
 (
 	pro_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -21,8 +38,6 @@ CREATE TABLE producto
 	pro_pv  DOUBLE(8,2) NOT NULL
 );
 
--- INSERCIÓN EN LA TABLA DE PRODUCTOS
--- se le quita los valores adicionales, se optimiza el insert
 INSERT INTO producto(pro_tipo,pro_nombre,pro_costo,pro_unid,pro_pv) VALUES
 ('Alimento'		,'Donkan carne y cereal 22kg'			,58200	,10	,66931),
 ('Alimento'		,'Dogourmet carneparrilla adulto 22kg'	,93733	,10	,107794),
@@ -38,7 +53,6 @@ INSERT INTO producto(pro_tipo,pro_nombre,pro_costo,pro_unid,pro_pv) VALUES
 ('Alimento'		,'Incros14,2g'							,2021	,10	,2425),
 ('Accesorio'	,'Palas gato'							,2160	,10	,2592);
 
--- TABLA DE EMPLEADOS
 CREATE TABLE empleado
 (
 	emp_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -48,15 +62,12 @@ CREATE TABLE empleado
     emp_estado ENUM('activo','inactivo') DEFAULT 'activo'
 );
 
--- INSERCIÓN DE EMPLEADOS
 INSERT INTO empleado(emp_nombre,emp_telefono) VALUES
 ('Angie Baños','3188645236'),
 ('Nevardo Efrain Baños','3146782904'),
 ('Catalina Anzola PAvon','3118970221'),
 ('Valentina Rodriguez','3141592653');
 
-
--- TABLA DE CLIENTES
 CREATE TABLE cliente
 (
 	cli_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +76,6 @@ CREATE TABLE cliente
 	cli_celular2 BIGINT
 );
 
--- INSERCION DE CLIENTES
 INSERT INTO cliente(cli_nombre, cli_celular, cli_celular2) VALUES
 ('Dumar Cendales',3133240933,3118634645),
 ('Johanna Méndez',3123210933,3045489120),
@@ -77,8 +87,6 @@ INSERT INTO cliente(cli_nombre, cli_celular, cli_celular2) VALUES
 ('Katherine Bastidas',3112496603,3212032553),
 ('Camila Patiño',3138343323,3142102214);
 
--- TABLA DE FACTURA DE PRODUCTOS
--- DROP TABLE IF EXISTS fac_productos;
 CREATE TABLE fac_productos(
 	id_fact INT AUTO_INCREMENT PRIMARY KEY,
 	id_producto INT NOT NULL,
@@ -92,10 +100,7 @@ CREATE TABLE fac_productos(
 );
 
 ALTER TABLE fac_productos AUTO_INCREMENT=2020;
--- Creo que debe ir aca
--- ALTER TABLE fac_productos AUTO_INCREMENT=100; 
 
--- TABLA DE MASCOTAS
 CREATE TABLE mascota
 (
 	mas_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,9 +118,6 @@ CREATE TABLE mascota
 
 ALTER TABLE mascota AUTO_INCREMENT=101
 
--- INSERCIÓN DE MASCOTAS
--- CHECK
--- Se le cambia el nombre de la tabla
 INSERT INTO mascota(mas_nombre,mas_tipo,mas_raza,mas_peso,mas_sexo,mas_tamano,mas_des_social,mas_edad,mas_dueno) VALUES
 ('Max'		,'Perro'	,'Labrador'			,52.8	,'m'	,52	,'Juguetón excepto con los perros de su misma raza'	,5		,1),
 ('Lula'		,'Perro'	,'French poodle'	,13		,'h'	,30	,NULL												,3		,2),
@@ -131,23 +133,18 @@ INSERT INTO mascota(mas_nombre,mas_tipo,mas_raza,mas_peso,mas_sexo,mas_tamano,ma
 ('Niña'		,'Perro'	,'Criollo'			,17		,'h'	,32	,'Juguetón'											,3		,6),
 ('Lemus'	,'Hamster'	,'Ruso'				,30/1000,'m'	,7.4,NULL												,7/12	,8);
 
--- TABLA DE SERVICIOS
 CREATE TABLE servicio
 (
 	ser_id CHAR(1) NOT NULL PRIMARY KEY,
 	ser_nombre VARCHAR(20) NOT NULL
 );
 
--- Inserción de servicios
--- Se corrije nombre de columna
 INSERT INTO servicio(ser_id, ser_nombre) VALUES
 ('P','Peluqueria'),
 ('G','Guarderia'),
 ('C','Consulta'),
 ('V','Venta');
 
--- TABAL DE FACTURA DE PRODUCTOS
--- Se corrije data type de ser_id
 CREATE TABLE factura
 (
 	fact_id INT AUTO_INCREMENT PRIMARY KEY,
